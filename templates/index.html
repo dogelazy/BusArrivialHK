@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>香港巴士實時到站預報</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
+
+    <!-- CSS handling top-right absolute positioning safely -->
+    <style>
+        .lang-switch-container {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+
+        .lang-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .lang-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-1px);
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Top Right Language Switch Button -->
+    <div class="lang-switch-container">
+        <button onclick="toggleLanguage()" id="langBtn" class="lang-btn">English</button>
+    </div>
+
+    <div class="container">
+        <header>
+            <h1>巴士到站預報 HK</h1>
+        </header>
+
+        <div class="search-box-container">
+            <form onsubmit="search(event); return false;">
+                <input type="text" id="routeInput" placeholder="搜尋路線 (例如 1A, 101)" oninput="search(event)">
+            </form>
+        </div>
+
+        <div class="glass-card">
+            <div id="routeListView">
+                <h2 id="listTitle">路線</h2>
+                <ul id="routeList" class="route-list"></ul>
+            </div>
+
+            <div id="routeDetailView" class="hidden">
+                <div class="detail-header">
+                    <button onclick="backToList()" class="back-btn">← 返回</button>
+                    <div class="route-header-info">
+                        <span id="detailRouteNumber" class="detail-route-number"></span>
+                        <span id="detailCompany" class="detail-company"></span>
+                    </div>
+                </div>
+                <p id="detailDest" class="detail-dest"></p>
+
+                <div id="directionToggle" class="direction-toggle hidden">
+                    <!-- Added the ⇄ icon prefix to match the back button style -->
+                    <button onclick="toggleDirection()" id="dirBtn" class="dir-btn">⇄ 去程 (O)</button>
+                </div>
+
+                <h3>車站及實時預計時間</h3>
+                <div id="stopsContainer" class="stops-container"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const localRouteList = {{ route_list | tojson | safe }};
+    </script>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+
+</html>
